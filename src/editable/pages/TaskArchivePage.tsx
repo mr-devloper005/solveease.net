@@ -9,7 +9,6 @@ import type { SiteFeedPagination, SitePost } from '@/lib/site-connector'
 import { taskPageMetadata } from '@/config/site.content'
 import { taskPageVoices } from '@/editable/content/task-pages.content'
 import { EditableSiteShell } from '@/editable/shell/EditableSiteShell'
-import { getVisualPreset, visualSystem } from '@/editable/theme/visual-system'
 
 export const revalidate = 3
 
@@ -60,7 +59,7 @@ const taskDeck: Record<TaskKey, { icon: typeof FileText; archiveClass: string; p
   classified: { icon: Megaphone, archiveClass: 'grid gap-5 xl:grid-cols-2', promise: 'Offer-board cards prioritize price, location, condition, and quick action.', badge: 'Offer' },
   image: { icon: Camera, archiveClass: 'columns-1 gap-5 space-y-5 md:columns-2 xl:columns-3', promise: 'Gallery-first browsing with strong visuals and compact captions.', badge: 'Gallery' },
   sbm: { icon: Bookmark, archiveClass: 'grid gap-4 md:grid-cols-2 xl:grid-cols-3', promise: 'Bookmark cards stay mostly text-based so saved resources scan quickly.', badge: 'Bookmark' },
-  pdf: { icon: Download, archiveClass: 'grid gap-5 md:grid-cols-2 xl:grid-cols-3', promise: 'Document cards surface file context, download intent, and summary.', badge: 'PDF' },
+  pdf: { icon: Download, archiveClass: 'grid gap-5 md:grid-cols-2 xl:grid-cols-3', promise: 'Premium document cards surface file context, download intent, and summary.', badge: 'PDF' },
   profile: { icon: UserRound, archiveClass: 'grid gap-5 md:grid-cols-2 xl:grid-cols-4', promise: 'Profile cards focus on identity, short bio, and direct discovery.', badge: 'Profile' },
 }
 
@@ -84,36 +83,35 @@ export async function EditableTaskArchiveRoute({
 export function TaskArchiveView({ task, posts, pagination, category, basePath }: { task: TaskKey; posts: SitePost[]; pagination: SiteFeedPagination; category: string; basePath: string }) {
   const taskConfig = getTaskConfig(task)
   const voice = taskPageVoices[task]
-  const preset = getVisualPreset(visualSystem.recommendedPreset as any)
   const page = pagination.page || 1
   const label = taskConfig?.label || task
   const deck = taskDeck[task]
   const Icon = deck.icon
-  const archiveVars = { '--archive-bg': preset.colors.background, '--archive-text': preset.colors.foreground, '--archive-surface': preset.colors.surface, '--archive-accent': preset.colors.accent } as CSSProperties
+  const archiveVars = { '--archive-bg': '#101214', '--archive-text': '#FEFDDF', '--archive-surface': '#171a1d', '--archive-accent': '#E87F24', '--editable-border': 'rgba(254,253,223,0.14)' } as CSSProperties
   const categoryLabel = category === 'all' ? 'All categories' : CATEGORY_OPTIONS.find((item) => item.slug === category)?.name || category
 
   return (
     <EditableSiteShell>
       <main style={archiveVars} className="bg-[var(--archive-bg)] text-[var(--archive-text)]">
         <section className="mx-auto grid max-w-[var(--editable-container)] gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-20">
-          <div className="rounded-[2.5rem] border border-[var(--editable-border)] bg-[var(--archive-surface)] p-7 shadow-[0_24px_80px_rgba(15,23,42,0.08)] sm:p-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--editable-border)] bg-white/70 px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-[var(--archive-accent)]"><Icon className="h-4 w-4" /> {label}</div>
-            <h1 className="mt-5 max-w-4xl text-5xl font-black leading-[0.95] tracking-[-0.07em] sm:text-6xl">{voice?.headline || `Browse ${label}`}</h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 opacity-70">{voice?.description || SITE_CONFIG.description}</p>
-            <div className="mt-6 rounded-[1.5rem] border border-[var(--editable-border)] bg-white/55 p-4 text-sm font-bold leading-7 opacity-75">{deck.promise}</div>
+          <div className="rounded-[8px] border border-[var(--editable-border)] bg-[var(--archive-surface)] p-7 shadow-[0_24px_80px_rgba(0,0,0,0.26)] sm:p-10">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-[#FFC81E]"><Icon className="h-4 w-4" /> {label}</div>
+            <h1 className="mt-5 max-w-4xl font-serif text-5xl font-black leading-[0.95] tracking-[-0.05em] sm:text-6xl">{voice?.headline || `Browse ${label}`}</h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-[#cfc7ab]">{voice?.description || SITE_CONFIG.description}</p>
+            <div className="mt-6 rounded-[8px] border border-white/12 bg-white/[0.04] p-4 text-sm font-bold leading-7 text-[#cfc7ab]">{deck.promise}</div>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href={basePath} className="rounded-full bg-[var(--archive-text)] px-5 py-3 text-sm font-black text-[var(--archive-bg)]">Browse all</Link>
-              <Link href="/search" className="rounded-full border border-[var(--editable-border)] px-5 py-3 text-sm font-black">Search posts</Link>
+              <Link href={basePath} className="rounded-full bg-[#E87F24] px-5 py-3 text-sm font-black text-[#08090a]">Browse all</Link>
+              <Link href="/search" className="rounded-full border border-white/15 px-5 py-3 text-sm font-black">Search posts</Link>
             </div>
           </div>
 
-          <form action={basePath} className="self-end rounded-[2rem] border border-[var(--editable-border)] bg-white/70 p-5 shadow-sm backdrop-blur">
+          <form action={basePath} className="self-end rounded-[8px] border border-black/10 bg-[#FEFDDF] p-5 text-[#101214] shadow-[0_22px_60px_rgba(0,0,0,0.2)]">
             <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] opacity-55"><Filter className="h-4 w-4" /> Filter</div>
-            <select name="category" defaultValue={category} className="mt-4 h-12 w-full rounded-2xl border border-[var(--editable-border)] bg-white px-4 text-sm font-bold outline-none">
+            <select name="category" defaultValue={category} className="mt-4 h-12 w-full rounded-[6px] border border-black/15 bg-white px-4 text-sm font-bold outline-none">
               <option value="all">All categories</option>
               {CATEGORY_OPTIONS.map((item) => <option key={item.slug} value={item.slug}>{item.name}</option>)}
             </select>
-            <button className="mt-3 h-12 w-full rounded-2xl bg-[var(--archive-text)] text-sm font-black text-[var(--archive-bg)]">Apply</button>
+            <button className="mt-3 h-12 w-full rounded-[6px] bg-[#101214] text-sm font-black text-[#FEFDDF]">Apply</button>
             <p className="mt-3 text-xs font-bold opacity-55">Showing: {categoryLabel}</p>
           </form>
         </section>
@@ -124,7 +122,7 @@ export function TaskArchiveView({ task, posts, pagination, category, basePath }:
               {posts.map((post, index) => <ArchivePostCard key={post.id || post.slug} post={post} task={task} basePath={basePath} index={index} />)}
             </div>
           ) : (
-            <div className="rounded-[2rem] border border-dashed border-[var(--editable-border)] bg-white/60 p-10 text-center">
+            <div className="rounded-[8px] border border-dashed border-[var(--editable-border)] bg-white/[0.04] p-10 text-center">
               <Search className="mx-auto h-8 w-8 opacity-45" />
               <h2 className="mt-4 text-3xl font-black tracking-[-0.05em]">No posts found</h2>
               <p className="mt-2 text-sm opacity-65">Try another category or refresh this page after publishing new content.</p>
@@ -132,9 +130,9 @@ export function TaskArchiveView({ task, posts, pagination, category, basePath }:
           )}
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            {pagination.hasPrevPage ? <Link href={pageHref(basePath, category, page - 1)} className="rounded-full border border-[var(--editable-border)] bg-white px-5 py-3 text-sm font-black">Previous</Link> : null}
-            <span className="rounded-full bg-[var(--archive-text)] px-5 py-3 text-sm font-black text-[var(--archive-bg)]">Page {page} of {pagination.totalPages || 1}</span>
-            {pagination.hasNextPage ? <Link href={pageHref(basePath, category, page + 1)} className="rounded-full border border-[var(--editable-border)] bg-white px-5 py-3 text-sm font-black">Next</Link> : null}
+            {pagination.hasPrevPage ? <Link href={pageHref(basePath, category, page - 1)} className="rounded-full border border-[var(--editable-border)] bg-white/[0.05] px-5 py-3 text-sm font-black">Previous</Link> : null}
+            <span className="rounded-full bg-[#FEFDDF] px-5 py-3 text-sm font-black text-[#101214]">Page {page} of {pagination.totalPages || 1}</span>
+            {pagination.hasNextPage ? <Link href={pageHref(basePath, category, page + 1)} className="rounded-full border border-[var(--editable-border)] bg-white/[0.05] px-5 py-3 text-sm font-black">Next</Link> : null}
           </div>
         </section>
       </main>
@@ -148,7 +146,7 @@ function ArchivePostCard({ post, task, basePath, index }: { post: SitePost; task
   if (task === 'classified') return <ClassifiedArchiveCard post={post} href={href} />
   if (task === 'image') return <ImageArchiveCard post={post} href={href} index={index} />
   if (task === 'sbm') return <BookmarkArchiveCard post={post} href={href} index={index} />
-  if (task === 'pdf') return <PdfArchiveCard post={post} href={href} />
+  if (task === 'pdf') return <PdfArchiveCard post={post} href={href} index={index} />
   if (task === 'profile') return <ProfileArchiveCard post={post} href={href} />
   return <ArticleArchiveCard post={post} href={href} index={index} />
 }
@@ -251,17 +249,48 @@ function BookmarkArchiveCard({ post, href, index }: { post: SitePost; href: stri
   )
 }
 
-function PdfArchiveCard({ post, href }: { post: SitePost; href: string }) {
+function PdfArchiveCard({ post, href, index }: { post: SitePost; href: string; index: number }) {
   const category = getCategory(post, 'PDF')
+  const image = getImages(post)[0]
+  if (index % 5 === 0) {
+    return (
+      <Link href={href} className="group overflow-hidden rounded-[8px] border border-[var(--editable-border)] bg-[#FEFDDF] text-[#101214] shadow-[0_22px_60px_rgba(0,0,0,0.24)] transition hover:-translate-y-1">
+        <div className="relative min-h-[260px] bg-[#08090a] p-6 text-[#FEFDDF]">
+          {image ? <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-42 transition duration-500 group-hover:scale-105" /> : null}
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,9,10,0.12),rgba(8,9,10,0.86))]" />
+          <div className="relative z-10 flex min-h-[210px] flex-col justify-end">
+            <span className="w-fit rounded-full bg-[#FFC81E] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#101214]">{category}</span>
+            <h2 className="mt-5 line-clamp-3 text-3xl font-black leading-tight tracking-[-0.04em]">{post.title}</h2>
+          </div>
+        </div>
+        <div className="p-5">
+          <p className="line-clamp-3 text-sm leading-6 text-black/65">{getSummary(post)}</p>
+          <p className="mt-5 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#E87F24]">Open document <Download className="h-4 w-4" /></p>
+        </div>
+      </Link>
+    )
+  }
+  if (index % 5 === 1) {
+    return (
+      <Link href={href} className="group grid gap-4 rounded-[8px] border border-[var(--editable-border)] bg-white/[0.04] p-4 text-[#FEFDDF] transition hover:-translate-y-1 hover:bg-white/[0.07] sm:grid-cols-[96px_minmax(0,1fr)] md:col-span-2 xl:col-span-1">
+        <div className="flex h-24 w-24 items-center justify-center rounded-[6px] bg-[#E87F24] text-[#08090a]"><FileText className="h-10 w-10" /></div>
+        <div className="min-w-0">
+          <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#73A5CA]">{category}</span>
+          <h2 className="mt-2 line-clamp-2 text-2xl font-black leading-tight tracking-[-0.04em]">{post.title}</h2>
+          <p className="mt-3 line-clamp-2 text-sm leading-6 text-[#cfc7ab]">{getSummary(post)}</p>
+        </div>
+      </Link>
+    )
+  }
   return (
-    <Link href={href} className="group rounded-[2rem] border border-[var(--editable-border)] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+    <Link href={href} className="group rounded-[8px] border border-[var(--editable-border)] bg-[#171a1d] p-6 text-[#FEFDDF] shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
       <div className="flex items-start justify-between gap-4">
-        <div className="rounded-[1.4rem] bg-[var(--archive-text)] p-5 text-[var(--archive-bg)]"><FileText className="h-8 w-8" /></div>
-        <span className="rounded-full bg-[var(--archive-bg)] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em]">{category}</span>
+        <div className="rounded-[6px] bg-[#FEFDDF] p-5 text-[#101214]"><FileText className="h-8 w-8" /></div>
+        <span className="rounded-full bg-white/[0.06] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#FFC81E]">{category}</span>
       </div>
       <h2 className="mt-8 text-2xl font-black leading-tight tracking-[-0.05em]">{post.title}</h2>
-      <p className="mt-4 line-clamp-4 text-sm leading-6 opacity-65">{getSummary(post)}</p>
-      <p className="mt-6 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[var(--archive-accent)]">Open document <Download className="h-4 w-4" /></p>
+      <p className="mt-4 line-clamp-4 text-sm leading-6 text-[#cfc7ab]">{getSummary(post)}</p>
+      <p className="mt-6 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#E87F24]">Open document <Download className="h-4 w-4" /></p>
     </Link>
   )
 }
