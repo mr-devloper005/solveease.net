@@ -7,7 +7,6 @@ import { buildPostUrl, fetchArticleComments, fetchTaskPostBySlug, fetchTaskPosts
 import { getTaskConfig, SITE_CONFIG, type TaskKey } from '@/lib/site-config'
 import type { SitePost } from '@/lib/site-connector'
 import { EditableSiteShell } from '@/editable/shell/EditableSiteShell'
-import { getVisualPreset, visualSystem } from '@/editable/theme/visual-system'
 
 export const revalidate = 3
 
@@ -105,8 +104,7 @@ const mapSrcFor = (post: SitePost) => {
 }
 
 export function TaskDetailView({ task, post, related, comments = [] }: { task: TaskKey; post: SitePost; related: SitePost[]; comments?: Array<{ id: string; name: string; comment: string; createdAt: string }> }) {
-  const preset = getVisualPreset(visualSystem.recommendedPreset as any)
-  const detailVars = { '--detail-bg': preset.colors.background, '--detail-text': preset.colors.foreground, '--detail-surface': preset.colors.surface, '--detail-accent': preset.colors.accent } as CSSProperties
+  const detailVars = { '--detail-bg': '#101214', '--detail-text': '#FEFDDF', '--detail-surface': '#171a1d', '--detail-accent': '#E87F24', '--editable-border': 'rgba(254,253,223,0.14)' } as CSSProperties
 
   return (
     <EditableSiteShell>
@@ -126,7 +124,7 @@ export function TaskDetailView({ task, post, related, comments = [] }: { task: T
 function BackLink({ task }: { task: TaskKey }) {
   const taskConfig = getTaskConfig(task)
   return (
-    <Link href={taskConfig?.route || '/'} className="inline-flex items-center gap-2 rounded-full border border-[var(--editable-border)] bg-white/70 px-4 py-2 text-sm font-black">
+    <Link href={taskConfig?.route || '/'} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-[#FEFDDF] px-4 py-2 text-sm font-black text-[#101214]">
       <ArrowLeft className="h-4 w-4" /> Back to {taskConfig?.label || 'posts'}
     </Link>
   )
@@ -265,29 +263,50 @@ function BookmarkDetail({ post, related }: { post: SitePost; related: SitePost[]
 
 function PdfDetail({ post, related }: { post: SitePost; related: SitePost[] }) {
   const fileUrl = getField(post, ['fileUrl', 'pdfUrl', 'documentUrl', 'url'])
+  const category = categoryOf(post, 'PDF')
   return (
-    <section className="mx-auto grid max-w-[var(--editable-container)] gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8 lg:py-16">
-      <article className="rounded-[2.7rem] border border-[var(--editable-border)] bg-white p-6 shadow-[0_30px_90px_rgba(15,23,42,0.08)] sm:p-9">
-        <BackLink task="pdf" />
-        <div className="mt-8 grid gap-6 sm:grid-cols-[120px_1fr]">
-          <div className="flex h-28 w-28 items-center justify-center rounded-[1.8rem] bg-[var(--detail-text)] text-[var(--detail-bg)]"><FileText className="h-12 w-12" /></div>
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.28em] text-[var(--detail-accent)]">PDF resource</p>
-            <h1 className="mt-3 text-4xl font-black leading-[0.98] tracking-[-0.07em] sm:text-6xl">{post.title}</h1>
+    <section className="mx-auto grid max-w-[var(--editable-container)] gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8 lg:py-16">
+      <article className="overflow-hidden rounded-[8px] border border-[var(--editable-border)] bg-[var(--detail-surface)] shadow-[0_30px_90px_rgba(0,0,0,0.28)]">
+        <div className="relative bg-[#FEFDDF] p-6 text-[#101214] sm:p-10">
+          <div className="absolute right-8 top-8 hidden h-36 w-28 rotate-6 rounded-[6px] bg-[#E87F24] shadow-xl sm:block">
+            <div className="p-4 text-center text-xl font-black">PDF</div>
+            <div className="mx-4 h-2 rounded-full bg-black/20" />
+            <div className="mx-4 mt-3 h-2 w-2/3 rounded-full bg-black/20" />
+          </div>
+          <BackLink task="pdf" />
+          <div className="mt-8 grid gap-6 sm:grid-cols-[120px_1fr]">
+            <div className="flex h-28 w-28 items-center justify-center rounded-[8px] bg-[#101214] text-[#FEFDDF]"><FileText className="h-12 w-12" /></div>
+            <div className="min-w-0 pr-0 sm:pr-32">
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#E87F24]">{category}</p>
+              <h1 className="mt-3 font-serif text-4xl font-black leading-[0.98] tracking-[-0.05em] sm:text-6xl">{post.title}</h1>
+            </div>
           </div>
         </div>
-        <BodyContent post={post} />
-        {fileUrl ? (
-          <div className="mt-8 overflow-hidden rounded-[2rem] border border-[var(--editable-border)] bg-[var(--detail-bg)]">
-            <div className="flex items-center justify-between gap-3 border-b border-[var(--editable-border)] bg-white p-4">
-              <span className="text-sm font-black">Document preview</span>
-              <Link href={fileUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[var(--detail-text)] px-4 py-2 text-xs font-black text-[var(--detail-bg)]">Download <Download className="h-4 w-4" /></Link>
+        <div className="p-6 sm:p-9">
+          {fileUrl ? (
+            <div className="mt-8 overflow-hidden rounded-[8px] border border-[var(--editable-border)] bg-[#08090a]">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--editable-border)] bg-[#171a1d] p-4">
+                <span className="text-sm font-black text-[#FEFDDF]">Document preview</span>
+                <Link href={fileUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#E87F24] px-4 py-2 text-xs font-black text-[#08090a]">Download <Download className="h-4 w-4" /></Link>
+              </div>
+              <iframe src={`${fileUrl}#toolbar=0&navpanes=0&scrollbar=0`} title={post.title} className="h-[78vh] w-full bg-white" />
             </div>
-            <iframe src={`${fileUrl}#toolbar=0&navpanes=0&scrollbar=0`} title={post.title} className="h-[78vh] w-full" />
-          </div>
-        ) : null}
+          ) : (
+            <div className="mt-8 rounded-[8px] border border-dashed border-white/14 bg-white/[0.04] p-6 text-sm font-bold text-[#cfc7ab]">
+              A downloadable PDF link has not been added yet.
+            </div>
+          )}
+        </div>
       </article>
-      <RelatedPanel task="pdf" post={post} related={related} />
+      <aside className="space-y-5">
+        <div className="rounded-[8px] border border-[var(--editable-border)] bg-[#FEFDDF] p-6 text-[#101214] shadow-[0_24px_70px_rgba(0,0,0,0.22)]">
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#E87F24]">Reader tools</p>
+          <h2 className="mt-4 text-3xl font-black leading-tight tracking-[-0.04em]">Keep this document handy.</h2>
+          <p className="mt-3 text-sm leading-7 text-black/65">Open the preview, download when available, or continue browsing related resources.</p>
+          {fileUrl ? <Link href={fileUrl} target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#007780] px-5 py-3 text-sm font-black text-white">Download PDF <Download className="h-4 w-4" /></Link> : null}
+        </div>
+        <RelatedPanel task="pdf" post={post} related={related} compact />
+      </aside>
     </section>
   )
 }
@@ -380,7 +399,7 @@ function RelatedPanel({ task, post, related, compact = false }: { task: TaskKey;
   return (
     <aside className="min-w-0 space-y-5">
       {!compact ? (
-        <div className="rounded-[2rem] border border-[var(--editable-border)] bg-white/70 p-5 backdrop-blur">
+        <div className="rounded-[8px] border border-[var(--editable-border)] bg-white/[0.05] p-5 backdrop-blur">
           <p className="text-xs font-black uppercase tracking-[0.22em] opacity-55">About this post</p>
           <div className="mt-4 grid gap-3 text-sm font-bold opacity-75">
             <p className="inline-flex items-center gap-2"><Tag className="h-4 w-4" /> Task: {taskConfig?.label || task}</p>
@@ -390,7 +409,7 @@ function RelatedPanel({ task, post, related, compact = false }: { task: TaskKey;
         </div>
       ) : null}
       {related.length ? (
-        <div className="rounded-[2rem] border border-[var(--editable-border)] bg-white/70 p-5 backdrop-blur">
+        <div className="rounded-[8px] border border-[var(--editable-border)] bg-white/[0.05] p-5 backdrop-blur">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-black tracking-[-0.04em]">More like this</h2>
             <Link href={taskConfig?.route || '/'} className="text-xs font-black uppercase tracking-[0.16em] opacity-55">View all</Link>
@@ -407,8 +426,8 @@ function RelatedPanel({ task, post, related, compact = false }: { task: TaskKey;
 function RelatedCard({ task, post }: { task: TaskKey; post: SitePost }) {
   const image = getImages(post)[0]
   return (
-    <Link href={buildPostUrl(task, post.slug)} className="group flex gap-3 rounded-2xl border border-[var(--editable-border)] bg-white p-3 transition hover:-translate-y-0.5 hover:shadow-lg">
-      {image && task !== 'sbm' ? <img src={image} alt="" className="h-20 w-20 shrink-0 rounded-xl object-cover" /> : <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-[var(--detail-bg)]"><FileText className="h-6 w-6 opacity-45" /></div>}
+    <Link href={buildPostUrl(task, post.slug)} className="group flex gap-3 rounded-[8px] border border-[var(--editable-border)] bg-white/[0.05] p-3 transition hover:-translate-y-0.5 hover:bg-white/[0.08] hover:shadow-lg">
+      {image && task !== 'sbm' ? <img src={image} alt="" className="h-20 w-20 shrink-0 rounded-[6px] object-cover" /> : <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[6px] bg-[#FEFDDF] text-[#101214]"><FileText className="h-6 w-6 opacity-65" /></div>}
       <div className="min-w-0">
         <h3 className="line-clamp-3 text-sm font-black leading-tight tracking-[-0.03em]">{post.title}</h3>
         <p className="mt-2 line-clamp-2 text-xs leading-5 opacity-60">{summaryText(post)}</p>
